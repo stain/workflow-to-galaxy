@@ -1,0 +1,98 @@
+<tool id="BioAID_ProteinDiscovery_id" name="BioAID_ProteinDiscovery">
+  <command interpreter="ruby">
+    BioAID_ProteinDiscovery.rb
+    #if $Query_source.history_or_textfield == "textfield":
+      false "$Query_source.textfield_Query"
+    #else:
+      true  "$Query_source.history_Query"
+    #end if
+    #if $maxHits_parameter_source.history_or_textfield == "textfield":
+      false "$maxHits_parameter_source.textfield_maxHits_parameter"
+    #else:
+      true  "$maxHits_parameter_source.history_maxHits_parameter"
+    #end if
+    $results_as_zip
+    $ValidatedProtein $UniProtID $result_zip
+  </command>
+  <inputs>
+    <conditional name="Query_source">
+      <param name="history_or_textfield" type="select" label="Select source for Query">
+        <option value="history">From history</option>
+        <option value="textfield" selected="true">Type manually</option>
+      </param>
+      <when value="history">
+        <param name="history_Query" type="data" label="Select Query"/>
+      </when>
+      <when value="textfield">
+        <param name="textfield_Query" type="text" area="True" size="2x50" value="&quot;transmembrane proteins&quot; AND amyloid" label="Enter Query"/>
+      </when>
+    </conditional>
+    <conditional name="maxHits_parameter_source">
+      <param name="history_or_textfield" type="select" label="Select source for maxHits_parameter">
+        <option value="history">From history</option>
+        <option value="textfield" selected="true">Type manually</option>
+      </param>
+      <when value="history">
+        <param name="history_maxHits_parameter" type="data" label="Select maxHits_parameter"/>
+      </when>
+      <when value="textfield">
+        <param name="textfield_maxHits_parameter" type="text" area="True" size="2x50" value="100" label="Enter maxHits_parameter"/>
+      </when>
+    </conditional>
+    <param name="results_as_zip" type="select" label="Would you also like the raw results as a zip file">
+      <option value="yes">Yes</option>
+      <option value="no" selected="true">No</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data format="tabular" name="ValidatedProtein" label="ValidatedProtein"/>
+    <data format="tabular" name="UniProtID" label="UniProtID"/>
+    <data format="zip" name="result_zip" label="Compressed Results (zip)">
+      <filter>results_as_zip == "yes"</filter>
+    </data>
+  </outputs>
+  <help>
+**What it does**
+
+The workflow extracts protein names from documents retrieved from MedLine based on a user Query (cf Apache Lucene syntax). The protein names are filtered by checking if there exists a valid UniProt ID for the given protein name.
+
+-----
+
+**Inputs**
+
+- **Query** Examples include:
+
+  - "transmembrane proteins" AND amyloid
+
+- **maxHits_parameter** Maximum number of documents to extract proteins from. Use &lt;10 for testing, 100 as default, &gt;100 if you want to live dangerously and can wait (may cause memory problems). Maximum number of documents to extract proteins from. Examples include:
+
+  - 100
+
+
+-----
+
+**Outputs**
+
+- **ValidatedProtein** 
+- **UniProtID** 
+
+-----
+
+.. class:: warningmark
+
+**Please note that some workflows are not up-to-date or have dependencies** that cannot be met by the specific Taverna server that you specified during generation of this tool. You can make sure that the workflow is valid by running it in the Taverna Workbench first to confirm that it works before running it via Galaxy.
+
+-----
+
+.. class:: warningmark
+
+**Please note that there might be some repetitions in the workflow description** in some of the generated workflows. This is due to a backwards compatibility issue on the myExperiment repository which keeps the old descriptions to make sure that no information is lost.
+
+-----
+
+.. class:: infomark
+
+**For more information on that workflow please visit** http://www.myexperiment.org/workflows/74.
+
+  </help>
+</tool>

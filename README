@@ -1,0 +1,61 @@
+= workflow-to-galaxy tool generator
+
+
+Authors::     Konstantinos Karasavvas
+Gem Version:: 0.2.9
+Contact::     mailto:kostas.karasavvas@nbic.nl
+Licence::     MIT (See LICENCE or http://www.opensource.org/licenses/mit-license)
+Copyright::   (c) 2010 Netherlands Bioinformatics Centre, The Netherlands
+
+
+== Synopsis
+
+This script requires a Taverna2 workflow URL as input and generates a Galaxy tool
+(a UI XML definition plus a script) that will enable the execution of this
+workflow through Galaxy. The tool's description is as good as the description
+provided in the workflow itself. Currently, the myExperiment workflow repository
+is used to access workflow information via its REST API but a workflow description
+from a file is also supported.
+
+The name is workflow-to-galaxy rather than t2-workflow-to-galaxy because it is
+possible that it will support other workflow management systems in the future.
+
+
+== Installation
+
+  [sudo] gem install workflow-to-galaxy
+
+
+== Usage
+
+workflow_to_galaxy [options] <myExperiement-workflow> | <t2flow-file>
+
+Generates a Galaxy tool (a UI xml definition plus a script) for the
+specified Taverna2 workflow, where <myExperiment-workflow> is
+the full URL of the workflow in the myExperiment website. Alternatively
+a t2flow file can be passed for workflows not in myExperiment. Available
+options are:
+
+  -o OUTPUT, --output=OUTPUT  The file name(s) of the generated tool. If it is not specified then the workflow's name will be used.
+
+  -s SERVER, --server=SERVER  The taverna server that the script will request execution from. If it is not specified then "http://localhost:8980/taverna-server" will be used.
+
+  -t,        --t2flow         The workflow is a t2flow file.
+
+
+== Example
+
+Let's say we want to install the taverna2 workflow http://www.myexperiment.org/workflows/74.html
+from myExperiment repository:
+
+  $ workflow_to_galaxy  -s http://localhost:8980/taverna-server  http://www.myexperiment.org/workflows/74/download/bioaid_proteindiscovery_781733.t2flow?version=5
+
+
+
+== References
+
+Taverna-Galaxy:: https://trac.nbic.nl/elabfactory/wiki/eGalaxy
+Galaxy::         http://galaxy.psu.edu
+Taverna2::       http://www.taverna.org.uk
+myExperiment::   http://www.myexperiment.org
+

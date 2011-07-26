@@ -1,0 +1,15 @@
+= Changes log for the Taverna-Galaxy Gem
+
+== Version 0.2.9
+* Fixed minor bug when workflow had empty description
+* Added instructions to generated scripts on how to run them without Galaxy.
+
+
+== Version 0.2.8
+* Clean up of documentation
+* Added rubyzip dependency to gemspec
+
+
+== Version 0.2.7
+* A Galaxy tool can now also be created by providing a t2flow file with the --t2flow flag.
+
