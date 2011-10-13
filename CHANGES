@@ -1,5 +1,10 @@
 = Changes log for the Taverna-Galaxy Gem
 
+== Version 0.3.0
+* Updated to newer myexperiment-rest lib (0.3.0).
+* Restructured, now more modular and extensible.
+
+
 == Version 0.2.9
 * Fixed minor bug when workflow had empty description
 * Added instructions to generated scripts on how to run them without Galaxy.

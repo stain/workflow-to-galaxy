@@ -2,40 +2,10 @@
 
 require 'rubygems'
 require 'optparse'
-require 't2flow/model.rb'
-require 't2flow/parser.rb'
 require 'cgi'
-require 'myexperiment-rest'
 require 'workflow-to-galaxy'
 
-include MyExperimentREST
-include Generator
-
-
-# Populates and returns a _TavernaWorkflow_ object (same as in
-# myexperiment-rest) from a local t2flow file.
-def populate_taverna_workflow_from_t2flow(t2flow)
-  t2flow_file = File.new(t2flow, "r")
-  parsed_t2flow = T2Flow::Parser.new.parse(t2flow_file)
-
-  wkf_title = parsed_t2flow.name
-  wkf_descr = parsed_t2flow.main.annotations.descriptions[0]    # gets only the first
-  wkf_sources = []
-  parsed_t2flow.main.sources.each do |s|
-    wkf_sources << TavernaIOData.new(s.name, 
-                                     s.descriptions ? CGI.escapeHTML(s.descriptions.to_s) : [],
-                                     s.example_values ? s.example_values : [])
-  end
-  wkf_sinks = []
-  parsed_t2flow.main.sinks.each do |s|
-    wkf_sinks << TavernaIOData.new(s.name,
-                                   s.descriptions ? CGI.escapeHTML(s.descriptions.to_s) : [],
-                                   s.example_values ? s.example_values : [])
-  end
-
-  workflow = TavernaWorkflow.new(TavernaWorkflow::T2_FLOW, t2flow, wkf_title, wkf_descr, wkf_sources, wkf_sinks)
-
-end
+include WorkflowToGalaxy
 
 
 # Set up and parse arguments
@@ -43,21 +13,24 @@ out_file = ""
 t2_server = ""
 options = {}
 opts = OptionParser.new do |opt|
-  opt.banner = "Usage: workflow_to_galaxy [options] <myExperiement-workflow> | <t2flow-file>"
+  opt.banner = "Usage: workflow_to_galaxy [options] <myExperiment-workflow> | <t2flow-file>"
   opt.separator ""
   opt.separator "Generates a Galaxy tool (a UI xml definition plus a script) for the "
-  opt.separator "specified Taverna2 workflow, where <myExperiment-workflow> is "
-  opt.separator "the full URL of the workflow in the myExperiment website. Alternatively "
-  opt.separator "a t2flow file can be passed for workflows not in myExperiment. Available "
-  opt.separator "options are:"
+  opt.separator "specified Taverna2 workflow, where <myExperiment-workflow> is the full "
+  opt.separator "URL of the workflow in the myExperiment website. Alternatively a t2flow "
+  opt.separator "file can be passed for workflows not in myExperiment. Available options "
+  opt.separator "are:"
 
-  opt.on("-o OUTPUT", "--output=OUTPUT", "The file name(s) of the generated tool. " +
-    "If it is not specified then the workflow's name will be used.") do |val|
+  opt.on("-o OUTPUT", "--output=OUTPUT", "The file name(s) of the generated tool.",
+                                         "If it is not specified then the",
+                                         "workflow's name will be used.") do |val|
     out_file = val if val != nil
   end
 
-  opt.on("-s SERVER", "--server=SERVER", "The taverna server that the script will request execution from. " +
-    "If it is not specified then 'http://localhost:8980/taverna-server' will be used.") do |val|
+  opt.on("-s SERVER", "--server=SERVER", "The taverna server that the script will",
+                                         "request execution from. If not specified",
+                                         "'http://localhost:8080/taverna-server'",
+                                         "will be used.") do |val|
     t2_server = val if val != nil
   end
 
@@ -75,36 +48,56 @@ if url == nil
   exit 1
 end
 
-# Object to store the workflow object
-wkf_data = nil
-
-if options[:t2flow]
-  # Parse local t2flow file -- a _Taverna_Workflow_ object is returned
-  wkf_data = populate_taverna_workflow_from_t2flow(url)
-else
-  # Get workflow data from myexperiment -- a _Taverna_Workflow_ object is returned
-  wkf_data = Workflows.new.read(url)
-end
-
-# Set output files
-if out_file != ""
-  xml_file = "#{out_file}.xml"
-  script_file = "#{out_file}.rb"
-else
-  xml_file = "#{wkf_data.title}".gsub(/\W/, '') + ".xml"
-  script_file = "#{wkf_data.title}".gsub(/\W/, '') + ".rb"
-end
-
 # Set taverna server if not specified
-t2_server = "http://localhost:8980/taverna-server"  if t2_server == ""
+t2_server ||= "http://localhost:8080/taverna-server"
 
 
+#if options[:t2flow]
+#  wkf_source =
+#else
+#  wkf_source = Workflows::MYEXPERIMENT_TAVERNA2
+#end
 
-# Generate Galaxy tool's files
-xml_file_ob = File.open(xml_file, "w")
-generate_xml(wkf_data, xml_file, xml_file_ob)
-xml_file_ob.close
+# create file handlers
+if out_file != ""
+  xml_out = open("#{out_file}.xml", "w")
+  rb_out = open("#{out_file}.rb", "w")
+end
 
-script_file_ob = File.open(script_file, "w")
-generate_script(wkf_data, t2_server, script_file_ob)
-script_file_ob.close
+
+# create generator or wrapper (could have used url for t2flow key to avoid
+# if/else but future sources would still need them)
+if options[:t2flow]
+  if out_file != ""
+    wkf = GalaxyTool.new(:wkf_source => Workflows::T2FLOW,
+                         :params => {:t2_server => t2_server,
+                                     :t2flow => url,
+                                     :xml_out => xml_out,
+                                     :rb_out => rb_out } )
+  else
+    wkf = GalaxyTool.new(:wkf_source => Workflows::T2FLOW,
+                         :params => {:t2_server => t2_server,
+                                     :t2flow => url } )
+  end
+else
+  if out_file != ""
+    wkf = GalaxyTool.new(:wkf_source => Workflows::MYEXPERIMENT_TAVERNA2,
+                         :params => {:t2_server => t2_server,
+                                     :url => url,
+                                     :xml_out => xml_out,
+                                     :rb_out => rb_out } )
+  else
+    wkf = GalaxyTool.new(:wkf_source => Workflows::MYEXPERIMENT_TAVERNA2,
+                         :params => {:t2_server => t2_server,
+                                     :url => url } )
+  end
+end
+
+# close file handlers
+if out_file != ""
+  xml_out.close
+  rb_out.close
+end
+
+wkf.generate
+

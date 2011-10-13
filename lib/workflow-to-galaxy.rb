@@ -1,5 +1,7 @@
-require 'workflow-to-galaxy/generator'
+require 'workflow-to-galaxy/galaxy'
+require 'workflow-to-galaxy/constants'
 
-module WorkflowToGalaxy
+
+module WorkflowToGalaxy  # TODO rename to WorkflowWrappers?
     
 end
