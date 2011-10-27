@@ -59,3 +59,7 @@ Galaxy::         http://galaxy.psu.edu
 Taverna2::       http://www.taverna.org.uk
 myExperiment::   http://www.myexperiment.org
 
+
+== Semantic Versioning
+
+This module uses semantic versioning concepts from http://semver.org/.

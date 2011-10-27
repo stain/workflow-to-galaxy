@@ -1,0 +1,50 @@
+<tool id="Demonstration_of_configurable_iteration_id" name="Demonstration of configurable iteration">
+  <command interpreter="ruby">
+    Demonstration_of_configurable_iteration.rb
+    $results_as_zip
+    $Output $result_zip
+  </command>
+  <inputs>
+    <param name="input" type="select" display="radio" size="250" label="This workflow has no inputs" />
+    <param name="results_as_zip" type="select" label="Would you also like the raw results as a zip file">
+      <option value="yes">Yes</option>
+      <option value="no" selected="true">No</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data format="tabular" name="Output" label="Output"/>
+    <data format="zip" name="result_zip" label="Compressed Results (zip)">
+      <filter>results_as_zip == "yes"</filter>
+    </data>
+  </outputs>
+  <help>
+**What it does**
+
+This workflow shows the use of the iteration strategy editor to ensure that only relevant combinations of inputs are used during an implicit iteration.
+
+-----
+
+**Outputs**
+
+- **Output** 
+
+-----
+
+.. class:: warningmark
+
+**Please note that some workflows are not up-to-date or have dependencies** that cannot be met by the specific Taverna server that you specified during generation of this tool. You can make sure that the workflow is valid by running it in the Taverna Workbench first to confirm that it works before running it via Galaxy.
+
+-----
+
+.. class:: warningmark
+
+**Please note that there might be some repetitions in the workflow description** in some of the generated workflows. This is due to a backwards compatibility issue on the myExperiment repository which keeps the old descriptions to make sure that no information is lost.
+
+-----
+
+.. class:: infomark
+
+**For more information on that workflow please visit** http://www.myexperiment.org/workflows/822.
+
+  </help>
+</tool>

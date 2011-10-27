@@ -1,0 +1,75 @@
+<tool id="Fetch_PDB_flatfile_from_RCSB_server_id" name="Fetch PDB flatfile from RCSB server">
+  <command interpreter="ruby">
+    Fetch_PDB_flatfile_from_RCSB_server.rb
+    #if $pdbID_source.history_or_textfield == "textfield":
+      false "$pdbID_source.textfield_pdbID"
+    #else:
+      true  "$pdbID_source.history_pdbID"
+    #end if
+    $results_as_zip
+    $pdbFlatFile $result_zip
+  </command>
+  <inputs>
+    <conditional name="pdbID_source">
+      <param name="history_or_textfield" type="select" label="Select source for pdbID">
+        <option value="history">From history</option>
+        <option value="textfield" selected="true">Type manually</option>
+      </param>
+      <when value="history">
+        <param name="history_pdbID" type="data" label="Select pdbID"/>
+      </when>
+      <when value="textfield">
+        <param name="textfield_pdbID" type="text" area="True" size="2x50" value="1crn" label="Enter pdbID"/>
+      </when>
+    </conditional>
+    <param name="results_as_zip" type="select" label="Would you also like the raw results as a zip file">
+      <option value="yes">Yes</option>
+      <option value="no" selected="true">No</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data format="tabular" name="pdbFlatFile" label="pdbFlatFile"/>
+    <data format="zip" name="result_zip" label="Compressed Results (zip)">
+      <filter>results_as_zip == "yes"</filter>
+    </data>
+  </outputs>
+  <help>
+**What it does**
+
+Given an identifier such as '1crn' fetches the PDB format flatfile and returns the corresponding 3D image of the protein.
+
+-----
+
+**Inputs**
+
+- **pdbID** PDB identifier such as '1crn' Examples include:
+
+  - 1crn
+
+
+-----
+
+**Outputs**
+
+- **pdbFlatFile** 
+
+-----
+
+.. class:: warningmark
+
+**Please note that some workflows are not up-to-date or have dependencies** that cannot be met by the specific Taverna server that you specified during generation of this tool. You can make sure that the workflow is valid by running it in the Taverna Workbench first to confirm that it works before running it via Galaxy.
+
+-----
+
+.. class:: warningmark
+
+**Please note that there might be some repetitions in the workflow description** in some of the generated workflows. This is due to a backwards compatibility issue on the myExperiment repository which keeps the old descriptions to make sure that no information is lost.
+
+-----
+
+.. class:: infomark
+
+**For more information on that workflow please visit** http://www.myexperiment.org/workflows/823.
+
+  </help>
+</tool>

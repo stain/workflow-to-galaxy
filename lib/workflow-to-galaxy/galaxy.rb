@@ -54,7 +54,9 @@ module WorkflowToGalaxy
 
     # Galaxy's XML tool tag
     def tool_begin_tag(out, name)
-      out.write("<tool id=\"#{name}_id\" name=\"#{name}\">\n")
+      # wkf title is used for id but spaces are changed to underscores
+      # TODO: delete other special characters!!
+      out.write("<tool id=\"#{name.gsub(/ /, '_')}_id\" name=\"#{name}\">\n")
     end
 
     # Galaxy's XML command tag
@@ -506,7 +508,7 @@ START_RUN
     # Generates the Galaxy tool's xml file responsible for the UI.
     # TODO: maybe clean arguments -- only xml_out is needed to be passed
     def generate_xml(t2_workflow, xml_out)
-      tool_begin_tag(xml_out, xml_out.path.match('([^\/]+)\..*$')[1])
+      tool_begin_tag(xml_out, t2_workflow.title)
       command_tag(xml_out, t2_workflow, xml_out.path.match('([^\/]+)\..*$')[1] + '.rb')
       inputs_tag(xml_out, t2_workflow.inputs)
       outputs_tag(xml_out, t2_workflow.outputs)
@@ -605,7 +607,7 @@ START_RUN
       if @config[:params][:xml_out]
         generate_xml(@wkf_object, @config[:params][:xml_out])
       else
-        xml_out = open(@wkf_object.title + ".xml", "w")
+        xml_out = open(@wkf_object.title.gsub(/ /, '_') + ".xml", "w")
         generate_xml(@wkf_object, xml_out)
         xml_out.close
       end
@@ -614,7 +616,7 @@ START_RUN
       if @config[:params][:rb_out]
         generate_rb(@wkf_object, @config[:params][:rb_out], @config[:params][:t2_server])
       else
-        rb_out = open(@wkf_object.title + ".rb", "w")
+        rb_out = open(@wkf_object.title.gsub(/ /, '_') + ".rb", "w")
         generate_rb(@wkf_object, rb_out, @config[:params][:t2_server])
         rb_out.close
       end

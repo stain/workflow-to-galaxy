@@ -1,5 +1,11 @@
 = Changes log for the Taverna-Galaxy Gem
 
+== Version 0.3.1
+* Used semver formally (taged: v0.3.1 semver)
+* For safety default wkf title substitutes ' ' with '_'
+* Extended workflow tests
+
+
 == Version 0.3.0
 * Updated to newer myexperiment-rest lib (0.3.0).
 * Restructured, now more modular and extensible.
