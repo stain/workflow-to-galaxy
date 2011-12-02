@@ -280,6 +280,7 @@ module WorkflowToGalaxy
 
     # Galaxy's script utility methods
     # TODO: use ruby's flatten instead of our own !!!
+    # TODO: add_to_zip_file does not work for multiple files -- with new API??
     def script_util_methods(out)
 
       out.write <<'UTIL_METHODS'
@@ -607,7 +608,7 @@ START_RUN
       if @config[:params][:xml_out]
         generate_xml(@wkf_object, @config[:params][:xml_out])
       else
-        xml_out = open(@wkf_object.title.gsub(/ /, '_') + ".xml", "w")
+        xml_out = open(@wkf_object.title.to_filename + ".xml", "w")
         generate_xml(@wkf_object, xml_out)
         xml_out.close
       end
@@ -616,7 +617,7 @@ START_RUN
       if @config[:params][:rb_out]
         generate_rb(@wkf_object, @config[:params][:rb_out], @config[:params][:t2_server])
       else
-        rb_out = open(@wkf_object.title.gsub(/ /, '_') + ".rb", "w")
+        rb_out = open(@wkf_object.title.to_filename + ".rb", "w")
         generate_rb(@wkf_object, rb_out, @config[:params][:t2_server])
         rb_out.close
       end

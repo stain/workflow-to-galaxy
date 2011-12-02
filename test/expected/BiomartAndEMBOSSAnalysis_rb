@@ -1,0 +1,200 @@
+#!/usr/bin/env ruby
+
+# This script can be tested without Galaxy. You can run from the shell as follows:
+#
+#   $ script_name.rb <input1> true|false <input2> true|false  yes|no  <output1> <output2>
+#
+# After each input value a boolean specifies if the value is literal (false) or if
+# it specifies a file name to read as input.
+#
+# After all workflow inputs a yes or no input specifies if we also want our results zipped.
+#
+# Finally, all the output files follow. Note that if you selected to also get a zip
+# then you need to specify an additional output in the end after the normal workflow
+# outputs.
+
+require 'rubygems'
+require 't2-server'
+require 'open-uri'
+require 'zip/zipfilesystem'
+
+
+  # sends the zip file to specified output
+  def output_zip_file(uuid, zip_out)
+    File.open("/tmp/#{uuid}.zip") do |zip|
+      while data = zip.read(4096)
+        zip_out.write data
+      end
+    end
+    File.delete("/tmp/#{uuid}.zip")
+  end
+
+
+  #
+  # replicates the directory result structure as constructed by the
+  # taverna server and recreates it in a zip File
+  #
+  def add_to_zip_file(output_dir, data_lists, zip_out)
+    zip_out.dir.mkdir("#{output_dir}")
+    data_lists.each_with_index do |item, index|
+      if item.instance_of? Array
+        add_to_zip_file("#{output_dir}/#{index+1}", item, zip_out)
+      else
+        zip_out.file.open("#{output_dir}/#{index+1}", "w") { |f| f.puts item }
+      end
+    end
+  end
+
+
+  # method that flattens the list of list of list ... result of get_output
+  def print_flattened_result(out, data_lists)
+    data_lists.each do |l|
+      if l.instance_of? Array
+        print_flattened_result(out, l)
+      else
+        out.puts l
+      end
+    end
+  end
+
+
+  #
+  # Method that acquires all the results of the specified output directory.
+  # If valid zip File is passed it also accumulates results as a zip file.
+  #
+  def get_outputs(run, refs, outfile, dir, zip_out=nil)
+    data_lists = run.get_output(dir, refs)
+    print_flattened_result(outfile, data_lists)
+    if zip_out
+      add_to_zip_file(dir, data_lists, zip_out)
+    end
+  end
+
+
+  #
+  # Sanitize all special characters in UI inputs that Galaxy substitutes for
+  # security reasons. This methods turns them back to their original values before
+  # using them (i.e. sending them to the taverna server
+  # NB: note that double quote is sanitized to "'" that is because the double code
+  #     confuses the Taverna server ruby library. Apparently, this is not trivial
+  #     to fix.
+  #
+  def sanitize(string)
+    string.gsub(/(__sq__|__dq__|__at__|__cr__|__cn__|__tc__|__gt__|__lt__|__ob__|__cb__|__oc__|__cc__)/) do
+      if $1 == '__sq__'
+        "'"
+      elsif $1 == '__dq__'
+        "'"
+      elsif $1 == '__cr__'
+        "\r"
+      elsif $1 == '__cn__'
+        "\n"
+      elsif $1 == '__tc__'
+        "\t"
+      elsif $1 == '__gt__'
+        '>'
+      elsif $1 == '__lt__'
+        '<'
+      elsif $1 == '__ob__'
+        '['
+      elsif $1 == '__cb__'
+        ']'
+      elsif $1 == '__oc__'
+        '{'
+      elsif $1 == '__cc__'
+        '}'
+      else
+        '@'
+      end
+    end
+  end
+
+  #
+  # Deletes last new line of file if it exists! It is needed for t2 workflows that
+  # do not sanitize properly, i.e. via a user-provided beanshell script
+  #
+  def chomp_last_newline(file)
+
+    if File.file?(file) and File.size(file) > 1
+      f = open(file, "rb+")
+      f.seek(-1, File::SEEK_END)
+      f.truncate(File.size(file) - 1) if f.read(1) == "\n"
+      f.close
+    end
+
+  end
+
+
+# use the uri reference to download the workflow locally
+wkf_file = URI.parse('http://www.myexperiment.org/workflows/1794/download/biomartandembossanalysis_457009.t2flow')
+in_wkf = open(wkf_file)
+
+  wkf = in_wkf.read()
+
+  # create run
+  begin
+    run = T2Server::Run.create('http://test.mybiobank.org/taverna-server', wkf)
+  rescue T2Server::T2ServerError => e
+    exit 1
+  end
+
+#
+# Get input arguments -- for each input a boolean specifies if it's from history
+# thus, for each t2_workflow input we have two arguments in the script!
+#
+
+# get results_as_zip input and open zip file if appropriate
+zipped = ARGV[0].chomp == "yes"
+zip_out = Zip::ZipFile.open("/tmp/#{run.uuid}.zip", Zip::ZipFile::CREATE) if zipped
+
+
+  # start run and wait until it is finished
+  run.start
+  run.wait(:progress => true)
+
+# get output arguments and associated them with a file
+output1 = File.open(ARGV[1], "w")
+begin
+  get_outputs(run, false, output1, 'outputPlot', zip_out)
+rescue Exception => err
+  get_outputs(run, false, output1, 'outputPlot.error', zip_out)
+ensure
+  output1.close
+end
+output2 = File.open(ARGV[2], "w")
+begin
+  get_outputs(run, false, output2, 'HSapIDs', zip_out)
+rescue Exception => err
+  get_outputs(run, false, output2, 'HSapIDs.error', zip_out)
+ensure
+  output2.close
+end
+output3 = File.open(ARGV[3], "w")
+begin
+  get_outputs(run, false, output3, 'MMusIDs', zip_out)
+rescue Exception => err
+  get_outputs(run, false, output3, 'MMusIDs.error', zip_out)
+ensure
+  output3.close
+end
+output4 = File.open(ARGV[4], "w")
+begin
+  get_outputs(run, false, output4, 'RNorIDs', zip_out)
+rescue Exception => err
+  get_outputs(run, false, output4, 'RNorIDs.error', zip_out)
+ensure
+  output4.close
+end
+
+# close zip_out (the newly created zip file) if opened
+zip_out.close if zip_out
+
+# open galaxy zip output and write zip file
+if zipped
+  galaxy_zip_out = File.open(ARGV[5], "w")
+  output_zip_file(run.uuid, galaxy_zip_out)
+  galaxy_zip_out.close
+end
+
+# delete run
+run.delete

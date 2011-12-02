@@ -7,7 +7,7 @@ require 'rdoc/task'
 
 spec = Gem::Specification.new do |s|
   s.name = 'workflow-to-galaxy'
-  s.version = '0.3.1'
+  s.version = '0.3.2'
   s.extra_rdoc_files = ['README', 'LICENSE', 'CHANGES']
   s.summary = 'This script acquires information for a taverna 2 workflow from myExperiment (or from a file) and generates a Galaxy tool (.xml and .rb files).'
   s.description = s.summary

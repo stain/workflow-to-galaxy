@@ -6,13 +6,13 @@ require 'workflow-to-galaxy'
 
 include WorkflowToGalaxy
 
-class TestGalaxyWkf823 < Test::Unit::TestCase
+class TestGalaxyWkf821 < Test::Unit::TestCase
 
   def setup
     Dir.chdir("test")
     @wkf = GalaxyTool.new(:wkf_source => Workflows::MYEXPERIMENT_TAVERNA2,
                          :params => {:t2_server => "http://test.mybiobank.org/taverna-server",
-                                     :url => 'http://www.myexperiment.org/workflows/823/download/fetch_pdb_flatfile_from_rcsb_server_58764.t2flow?version=1' } )
+                                     :url => 'http://www.myexperiment.org/workflows/821/download/biomart_and_emboss_analysis_671366.t2flow?version=1' } )
     @wkf.generate
   end
 

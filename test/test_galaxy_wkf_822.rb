@@ -20,15 +20,15 @@ class TestGalaxyWkf822 < Test::Unit::TestCase
   def test_xml_script_files
     # get the name dynamically
     # TODO: delete other special characters!!
-    File.open(@wkf.wkf_object.title.gsub(/ /, '_') + ".xml", "r") do |i|
+    File.open(@wkf.wkf_object.title.to_filename + ".xml", "r") do |i|
       generated = i.read
-      expected =  IO.read("expected/" + @wkf.wkf_object.title.gsub(/ /, '_') + "_xml")
+      expected =  IO.read("expected/" + @wkf.wkf_object.title.to_filename + "_xml")
       assert_equal(generated, expected, "Generated XML differs from expected XML file!")
     end
 
-    File.open(@wkf.wkf_object.title.gsub(/ /, '_') + ".rb", "r") do |i|
+    File.open(@wkf.wkf_object.title.to_filename + ".rb", "r") do |i|
       generated = i.read
-      expected =  IO.read("expected/" + @wkf.wkf_object.title.gsub(/ /, '_') + "_rb")
+      expected =  IO.read("expected/" + @wkf.wkf_object.title.to_filename + "_rb")
       assert_equal(generated, expected, "Generated script differs from expected script file!")
     end
 
@@ -36,7 +36,7 @@ class TestGalaxyWkf822 < Test::Unit::TestCase
 
 
   def teardown
-    File.delete(@wkf.wkf_object.title.gsub(/ /, '_') + ".xml", @wkf.wkf_object.title.gsub(/ /, '_') + ".rb")
+    File.delete(@wkf.wkf_object.title.to_filename + ".xml", @wkf.wkf_object.title.to_filename + ".rb")
     Dir.chdir("..")
   end
 

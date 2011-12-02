@@ -1,5 +1,11 @@
 = Changes log for the Taverna-Galaxy Gem
 
+
+== Version 0.3.2
+* Automatic filename creation is more robust (all special chars are removed)
+* More workflow tests
+
+
 == Version 0.3.1
 * Used semver formally (taged: v0.3.1 semver)
 * For safety default wkf title substitutes ' ' with '_'

@@ -1,0 +1,52 @@
+<tool id="Fetch_today's_xkcd_comic_id" name="Fetch today's xkcd comic">
+  <command interpreter="ruby">
+    Fetch_todays_xkcd_comic.rb
+    $results_as_zip
+    $todaysXkcd $result_zip
+  </command>
+  <inputs>
+    <param name="input" type="select" display="radio" size="250" label="This workflow has no inputs" />
+    <param name="results_as_zip" type="select" label="Would you also like the raw results as a zip file">
+      <option value="yes">Yes</option>
+      <option value="no" selected="true">No</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data format="tabular" name="todaysXkcd" label="todaysXkcd"/>
+    <data format="zip" name="result_zip" label="Compressed Results (zip)">
+      <filter>results_as_zip == "yes"</filter>
+    </data>
+  </outputs>
+  <help>
+**What it does**
+
+Use the local java plugins and some filtering operations to fetch the comic strip image from http://xkcd.com/
+
+Based on the FetchDailyDilbert workflow.
+
+-----
+
+**Outputs**
+
+- **todaysXkcd** 
+
+-----
+
+.. class:: warningmark
+
+**Please note that some workflows are not up-to-date or have dependencies** that cannot be met by the specific Taverna server that you specified during generation of this tool. You can make sure that the workflow is valid by running it in the Taverna Workbench first to confirm that it works before running it via Galaxy.
+
+-----
+
+.. class:: warningmark
+
+**Please note that there might be some repetitions in the workflow description** in some of the generated workflows. This is due to a backwards compatibility issue on the myExperiment repository which keeps the old descriptions to make sure that no information is lost.
+
+-----
+
+.. class:: infomark
+
+**For more information on that workflow please visit** http://www.myexperiment.org/workflows/824.
+
+  </help>
+</tool>
