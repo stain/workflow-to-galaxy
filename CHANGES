@@ -1,5 +1,8 @@
 = Changes log for the Taverna-Galaxy Gem
 
+== Version 0.3.3
+* Multiline output examples are now displayed better in HTML/Galaxy (similar to inputs)
+
 
 == Version 0.3.2
 * Automatic filename creation is more robust (all special chars are removed)

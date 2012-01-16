@@ -219,7 +219,10 @@ module WorkflowToGalaxy
           if o.examples.size >= 1
             out.write "Examples include:\n\n"
             o.examples.each do |ex|
-              out.write "  - " + ex.to_s + "\n"
+              # We could substitute them with with &#xA; that works for HTML (e.g. wkf 1180)
+              # But if an example input is truly multiline then input descr. will
+              # display them all as separate inputs...
+              out.write "  - " + ex.to_s.gsub(/[\n]/, '&#xA;  - ') + "\n"
             end
           end
           out.write "\n"
