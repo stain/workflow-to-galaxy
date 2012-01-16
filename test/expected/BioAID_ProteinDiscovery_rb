@@ -126,7 +126,7 @@ require 'zip/zipfilesystem'
 
 
 # use the uri reference to download the workflow locally
-wkf_file = URI.parse('http://www.myexperiment.org/workflows/74/download/bioaid_proteindiscovery_781733.t2flow')
+wkf_file = URI.parse('http://www.myexperiment.org/workflows/74/download/bioaid_proteindiscovery_181667.t2flow')
 in_wkf = open(wkf_file)
 
   wkf = in_wkf.read()

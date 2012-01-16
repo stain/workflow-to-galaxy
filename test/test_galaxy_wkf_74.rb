@@ -14,7 +14,7 @@ class TestGalaxyWkf74 < Test::Unit::TestCase
     rb = File.open("BioAID_ProteinDiscovery.rb", "w")
     wkf = GalaxyTool.new(:wkf_source => Workflows::MYEXPERIMENT_TAVERNA2,
                          :params => {:t2_server => "http://test.mybiobank.org/taverna-server",
-                                     :url => 'http://www.myexperiment.org/workflows/74/download/bioaid_proteindiscovery_781733.xml?version=5',
+                                     :url => 'http://www.myexperiment.org/workflows/74/download/bioaid_proteindiscovery_181667.t2flow?version=7',
                                      :xml_out => xml,
                                      :rb_out => rb } )
     wkf.generate

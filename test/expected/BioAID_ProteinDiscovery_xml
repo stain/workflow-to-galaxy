@@ -36,7 +36,7 @@
         <param name="history_maxHits_parameter" type="data" label="Select maxHits_parameter"/>
       </when>
       <when value="textfield">
-        <param name="textfield_maxHits_parameter" type="text" area="True" size="2x50" value="100" label="Enter maxHits_parameter"/>
+        <param name="textfield_maxHits_parameter" type="text" area="True" size="2x50" value="5" label="Enter maxHits_parameter"/>
       </when>
     </conditional>
     <param name="results_as_zip" type="select" label="Would you also like the raw results as a zip file">
@@ -60,21 +60,27 @@ The workflow extracts protein names from documents retrieved from MedLine based 
 
 **Inputs**
 
-- **Query** Examples include:
+- **Query** Fill in a search query, similar to pubmed. For advanced queries look up the Lucene syntax (http://lucene.apache.org/java/2_9_1/queryparsersyntax.html). Examples include:
 
   - "transmembrane proteins" AND amyloid
 
-- **maxHits_parameter** Maximum number of documents to extract proteins from. Use &lt;10 for testing, 100 as default, &gt;100 if you want to live dangerously and can wait (may cause memory problems). Maximum number of documents to extract proteins from. Examples include:
+- **maxHits_parameter** Maximum number of documents to extract proteins from. Use &lt;10 for testing, 100 as default, &gt;100 if you want to live dangerously and can wait (may cause memory problems). Examples include:
 
-  - 100
+  - 5
 
 
 -----
 
 **Outputs**
 
-- **ValidatedProtein** 
-- **UniProtID** 
+- **ValidatedProtein** Protein names as identified in the abstracts retrieved from MedLine. For each protein the workflow checked if a UniProt Identifier exists. Examples include:
+
+  - EZH2
+
+- **UniProtID** UniProt Identifiers of the proteins extracted from relevant documents for the input query. You can find more information about these proteins at http://www.uniprot.org/ Examples include:
+
+  - Q15910
+
 
 -----
 
