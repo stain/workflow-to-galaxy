@@ -28,6 +28,7 @@ module WorkflowToGalaxy
     #   :url        (the myexperiment workflow URL)
     #   :xml_out    (the file handle for the generated xml -- optional)
     #   :rb_out    (the file handle for the generated rb -- optional)
+    #   :response  (the response from myExperiment if already obtained -- optional)
     #
     # :params     (a hash with the following parameters -- T2FLOW)
     #   :t2flow   (the file name and path)
@@ -580,31 +581,38 @@ START_RUN
     #
     def generate
 
-      # check the type of workflow source and acquire the appropriate data
-      if(config[:wkf_source] == Workflows::MYEXPERIMENT_TAVERNA2)
+      if(config[:params][:response])
 
-        # TODO: check and add auth stuff -- even more unsafe with session cookies
-        # since the myexp username/passwd will be saved in the galaxy ruby script
-        # for all to see...
-
-        begin
-          # Get workflow data from myexperiment -- a _MyExperimentWorkflow_ object is returned
-          @wkf_object = MyExperimentREST::Workflow.from_uri(@config[:params][:url])
-        rescue Exception => e
-          raise "Problem acquiring workflow data from myExperiment!\n" + e
-        end
-
-      elsif(config[:wkf_source] == Workflows::T2FLOW)
-
-        begin
-          # Get workflow data from t2flow file -- a _MyExperimentWorkflow_ object is returned
-          @wkf_object = populate_taverna_workflow_from_t2flow(@config[:params][:t2flow])
-        rescue Exception => e
-          raise "Problem acquiring workflow data from t2flow file!\n" + e
-        end
+        @wkf_object = config[:params][:response]
 
       else
-        raise "No such workflow source supported!"
+
+        # check the type of workflow source and acquire the appropriate data
+        if(config[:wkf_source] == Workflows::MYEXPERIMENT_TAVERNA2)
+
+          # TODO: check and add auth stuff -- even more unsafe with session cookies
+          # since the myexp username/passwd will be saved in the galaxy ruby script
+          # for all to see...
+
+          begin
+            # Get workflow data from myexperiment -- a _MyExperimentWorkflow_ object is returned
+            @wkf_object = MyExperimentREST::Workflow.from_uri(@config[:params][:url])
+          rescue Exception => e
+            raise "Problem acquiring workflow data from myExperiment!\n" + e
+          end
+
+        elsif(config[:wkf_source] == Workflows::T2FLOW)
+
+          begin
+            # Get workflow data from t2flow file -- a _MyExperimentWorkflow_ object is returned
+            @wkf_object = populate_taverna_workflow_from_t2flow(@config[:params][:t2flow])
+          rescue Exception => e
+            raise "Problem acquiring workflow data from t2flow file!\n" + e
+          end
+
+        else
+          raise "No such workflow source supported!"
+        end
       end
 
       # if an xml_out file handler was not given provide one with the title as the value

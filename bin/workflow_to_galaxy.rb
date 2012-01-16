@@ -9,8 +9,8 @@ include WorkflowToGalaxy
 
 
 # Set up and parse arguments
-out_file = ""
-t2_server = ""
+out_file = nil
+t2_server = nil
 options = {}
 opts = OptionParser.new do |opt|
   opt.banner = "Usage: workflow_to_galaxy [options] <myExperiment-workflow> | <t2flow-file>"
@@ -49,7 +49,7 @@ if url == nil
 end
 
 # Set taverna server if not specified
-t2_server ||= "http://localhost:8080/taverna-server"
+t2_server ||= 'http://localhost:8080/taverna-server'
 
 
 #if options[:t2flow]
@@ -59,7 +59,7 @@ t2_server ||= "http://localhost:8080/taverna-server"
 #end
 
 # create file handlers
-if out_file != ""
+if out_file != nil
   xml_out = open("#{out_file}.xml", "w")
   rb_out = open("#{out_file}.rb", "w")
 end
@@ -68,7 +68,7 @@ end
 # create generator or wrapper (could have used url for t2flow key to avoid
 # if/else but future sources would still need them)
 if options[:t2flow]
-  if out_file != ""
+  if out_file != nil
     wkf = GalaxyTool.new(:wkf_source => Workflows::T2FLOW,
                          :params => {:t2_server => t2_server,
                                      :t2flow => url,
@@ -80,7 +80,7 @@ if options[:t2flow]
                                      :t2flow => url } )
   end
 else
-  if out_file != ""
+  if out_file != nil
     wkf = GalaxyTool.new(:wkf_source => Workflows::MYEXPERIMENT_TAVERNA2,
                          :params => {:t2_server => t2_server,
                                      :url => url,
@@ -94,7 +94,7 @@ else
 end
 
 # close file handlers
-if out_file != ""
+if out_file != nil
   xml_out.close
   rb_out.close
 end

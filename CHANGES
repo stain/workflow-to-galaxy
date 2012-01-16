@@ -3,6 +3,9 @@
 == Version 0.3.3
 * Multiline output examples are now displayed better in HTML/Galaxy (similar to inputs)
 * Updated wkf 74 test
+* Fixed default values for output files and taverna server
+* Added an optional parameter (:response) to the config in case we already have the myExp wkf
+  - was needed by myExperiment in order to call the myExp REST API beforehand for auth
 
 
 == Version 0.3.2
