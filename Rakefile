@@ -7,18 +7,18 @@ require 'rdoc/task'
 
 spec = Gem::Specification.new do |s|
   s.name = 'workflow-to-galaxy'
-  s.version = '0.3.3'
+  s.version = '0.3.4'
   s.extra_rdoc_files = ['README', 'LICENSE', 'CHANGES']
   s.summary = 'This script acquires information for a taverna 2 workflow from myExperiment (or from a file) and generates a Galaxy tool (.xml and .rb files).'
   s.description = s.summary
-  s.author = 'Kostas Karasavvas'
-  s.email = 'kostas.karasavvas@nbic.nl'
+  s.authors = ['Kostas Karasavvas', 'Finn Bacall']
+  s.email = ["finn.bacall@cs.man.ac.uk", "R.M.van_Schouwen@lumc.nl"]
   s.executables = ['workflow_to_galaxy.rb']
   s.files = %w(LICENSE README CHANGES Rakefile) + Dir.glob("{bin,lib,doc,spec}/**/*")
   s.require_path = "lib"
   s.bindir = "bin"
   s.add_dependency 'myexperiment-rest', '~> 0.3.0'
-  s.add_dependency 'taverna-t2flow', '~> 0.2.0'
+  s.add_dependency 'taverna-t2flow', '~> 0.3.0'
   s.add_dependency 't2-server', '~> 0.6.1'
   s.add_dependency 'rubyzip', '~> 0.9.4'
 end

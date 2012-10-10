@@ -1,9 +1,9 @@
 = workflow-to-galaxy tool generator
 
 
-Authors::     Konstantinos Karasavvas
-Gem Version:: 0.3.3
-Contact::     mailto:kostas.karasavvas@nbic.nl
+Authors::     Konstantinos Karasavvas, Finn Bacall
+Gem Version:: 0.3.4
+Contact::     mailto:r.m.van_schouwen@lumc.nl, mailto:finn.bacall@cs.man.ac.uk
 Licence::     MIT (See LICENCE or http://www.opensource.org/licenses/mit-license)
 Copyright::   (c) 2010 Netherlands Bioinformatics Centre, The Netherlands
 

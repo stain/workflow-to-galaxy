@@ -1,5 +1,8 @@
 = Changes log for the Taverna-Galaxy Gem
 
+== Version 0.3.4
+* Updated taverna-t2flow dependency to 0.3.0
+
 == Version 0.3.3
 * Multiline output examples are now displayed better in HTML/Galaxy (similar to inputs)
 * Updated wkf 74 test
